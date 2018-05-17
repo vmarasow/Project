@@ -1,0 +1,69 @@
+<aura:component controller="CreateAppointmentController">
+	<ltng:require scripts="{! join(',',
+                           $Resource.fullCalendar + '/dist/jquery-3.3.1.min.js',
+                           $Resource.fullCalendar + '/dist/moment.min.js',
+                           $Resource.fullCalendar + '/dist/fullcalendar.min.js',
+                           $Resource.qTip + '/jquery.qtip.min.js')}"
+                  styles="{! join(',',
+                          $Resource.fullCalendar + '/dist/fullcalendar.min.css',
+                          $Resource.qTip + '/jquery.qtip.min.css')}"
+                  afterScriptsLoaded="{! c.scriptsLoaded }" />
+    
+    <aura:attribute name="leadOwnerId" type="String" />
+    <aura:attribute name="leadId" type="String" />
+    <aura:attribute name="newEvent" type="Event" />
+    <aura:attribute name="showCreateEvent" type="Boolean" />
+    <aura:attribute name="picklistOptions" type="Object" />
+    
+    <aura:handler name="init" value="{!this}" action="{! c.onInit }" />
+    
+	<lightning:card title="Estimator Calendar" class="slds-card__body slds-card__body_inner" iconName="standard:event">
+        <div id="calendar"></div>
+    </lightning:card>
+    
+    <aura:if isTrue="{! v.showCreateEvent }">
+    	<div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+              <div class="slds-modal__header">
+                <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                X
+                <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="header99" class="slds-text-heading--medium">New Appointment</h2>
+              </div>
+              <div class="slds-modal__content slds-p-around--medium">
+                  <lightning:layout multipleRows="true">
+                      <lightning:layoutItem size="12" class="slds-p-around_small">
+                          <lightning:input type="date" label="Appointment Date" value="{!v.newEvent.ActivityDate}"/>
+                      </lightning:layoutItem>
+                      <lightning:layoutItem size="6" class="slds-p-around_small">
+                          <lightning:input type="time" label="Start Time" value="{! v.newEvent.StartDateTime }" />
+                      </lightning:layoutItem>
+                      <lightning:layoutItem size="6" class="slds-p-around_small">
+                          <lightning:input type="time" label="End Time" value="{! v.newEvent.EndDateTime }" />
+                      </lightning:layoutItem>
+                      <lightning:layoutItem size="6" class="slds-p-around_small">
+                          <lightning:select label="Show As" value="{! v.newEvent.ShowAs }">
+                              <aura:iteration items="{! v.picklistOptions.ShowAs }" var="option">
+                                  <option text="{!option.label}" value="{!option.value}" />
+                              </aura:iteration>
+                          </lightning:select>
+                      </lightning:layoutItem>
+                      <lightning:layoutItem size="6" class="slds-p-around_small">
+                          <lightning:select label="Subject" value="{! v.newEvent.Subject }">
+                              <aura:iteration items="{! v.picklistOptions.Subject }" var="option">
+                                  <option text="{!option.label}" value="{!option.value}"/>
+                              </aura:iteration>
+                          </lightning:select>
+                      </lightning:layoutItem>   
+                  </lightning:layout>
+              </div> 
+              <div class="slds-modal__footer">
+                <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}">Cancel</button>
+                <button class="slds-button slds-button--brand" onclick="{!c.saveEvent}">Save Appointment</button>
+              </div>
+            </div>
+          </div>
+          <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+</aura:component>
